@@ -16,7 +16,7 @@
         </div>
       </div>
       <div v-if="addCard === board" class="input-card">
-        <input type="text" v-model="inputTodo" >
+        <input ref='input' type="text" v-model="inputTodo" >
         <button v-on:click="addItem(board)" class="btn btn-save">Add Card</button>
         <button class="btn-close" v-on:click="closeAddCard()">x</button>
       </div>
@@ -46,11 +46,13 @@ export default {
   methods:{
     addItem:function (type){
       let title = this.inputTodo
-      this.todos.push({
-        title,
-        type
-      })
-      this.inputTodo = ""
+      if (title!=='') {
+        this.todos.push({
+          title,
+          type
+        })
+        this.inputTodo = ""
+      }
 
     },
     move: function(idBoard,indexTodo){
@@ -60,6 +62,8 @@ export default {
     },
     showAddCard:function(board){
       this.addCard = board
+      console.log(this.$refs.input)
+      this.$refs.input.focus()
     },
     remove:function(id) {
       this.todos.splice(id,1)
@@ -77,10 +81,14 @@ export default {
     },
     addBoard:function(){
       let board = prompt("Nama Board");
-      this.boards.push(board)
+      console.log(board);
+      if (board) {
+        this.boards.push(board)
+      }
     },
     closeAddCard:function() {
       this.addCard = ''
+      this.inputTodo = ''
     }
   }
 }
