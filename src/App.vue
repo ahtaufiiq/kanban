@@ -4,18 +4,23 @@
     <div class="board" v-for="(board,indexBoard) in boards" :key="indexBoard">
       <div class="header-board">
         <h1 class="title-board">{{board}}</h1>
-        <button v-on:click="removeBoard(indexBoard)" class="btn-remove">delete</button>
+        <button v-on:click="removeBoard(indexBoard)" class="btn btn-remove">delete</button>
       </div>
       <div class="content-todo"  v-for="(todo,indexTodo) in todos" :key="indexTodo" >
         <div v-if="todo.type === board" class="card">
           <p class="text-todo">{{todo.title}}</p>
           <div class="button-list">
-            <button style="margin-right:10px" v-if="indexBoard !== boards.length - 1" v-on:click="move(indexBoard,indexTodo)" class="btn-move">move</button>
-            <button v-on:click="remove(indexTodo)" class="btn-remove">remove</button>
+            <button style="margin-right:10px" v-if="indexBoard !== boards.length - 1" v-on:click="move(indexBoard,indexTodo)" class="btn btn-move">move</button>
+            <button v-on:click="remove(indexTodo)" class="btn btn-remove">remove</button>
           </div>
         </div>
       </div>
-      <div class="add-card" v-on:click="addItem(board)">
+      <div v-if="addCard === board" class="input-card">
+        <input type="text" v-model="inputTodo" >
+        <button v-on:click="addItem(board)" class="btn btn-save">Add Card</button>
+        <button class="btn-close" v-on:click="closeAddCard()">x</button>
+      </div>
+      <div v-if="addCard !== board" class="add-card" v-on:click="showAddCard(board)" >
         <p>+ Add another card</p>
       </div>
     </div>
@@ -33,21 +38,28 @@ export default {
       todos:[
 
       ],
-      boards:[]
+      inputTodo:'',
+      boards:["Todo"],
+      addCard:""
     }
   },
   methods:{
     addItem:function (type){
-      let title = prompt("Masukkan todo");
+      let title = this.inputTodo
       this.todos.push({
         title,
         type
       })
+      this.inputTodo = ""
+
     },
     move: function(idBoard,indexTodo){
       if (idBoard!== this.boards.length-1){
         this.todos[indexTodo].type = this.boards[idBoard+1]
       }
+    },
+    showAddCard:function(board){
+      this.addCard = board
     },
     remove:function(id) {
       this.todos.splice(id,1)
@@ -66,6 +78,9 @@ export default {
     addBoard:function(){
       let board = prompt("Nama Board");
       this.boards.push(board)
+    },
+    closeAddCard:function() {
+      this.addCard = ''
     }
   }
 }
@@ -83,6 +98,10 @@ body{
 }
 .header-board h1{
   margin-left: 20px;
+}
+
+.btn-save{
+  background-color: #5aac44;
 }
 
 .header-board button{
@@ -104,6 +123,7 @@ body{
     background-color: #c6cbd3;
     cursor: pointer;
 }
+
 #app {
   display: flex;
 }
@@ -133,18 +153,34 @@ body{
 }
 
 .btn-move{
-  padding: 6px;
-  border-radius: 4px;
   background: #0079bf;
-  border: none;
-  color: #ddd;
 }
-.btn-remove{
+.input-card{
+  margin: 10px;
+}
+.input-card input{
+  display: block;
+  width: 96%;
+  border-radius: 4px;
+  padding: 10px 0px 40px 10px;
+  border: none;
+  margin-bottom: 15px;
+}
+.btn{
   padding: 6px;
   border-radius: 4px;
-  background: #f3442c;
   border: none;
   color: #fff;
+}
+.btn-remove{
+  background: #f3442c;
+}
+.btn-close{
+  color: #777;
+  font-size: 22px;
+  border: none;
+  padding: 0px 10px;
+  margin-left: 5px;
 }
 
 .text-todo{
